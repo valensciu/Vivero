@@ -1,0 +1,95 @@
+#include "DHT.h"
+
+#define DHTPIN D3 // Definimos el pin digital donde se conecta el sensor temp
+#define DHTTYPE DHT11 // Defino el tipo de sensor temp
+
+int sensor_pin = D1; // Definimos el pin digital donde se conecta el sensor humedad
+
+  DHT dht(DHTPIN, DHTTYPE); // Inicializamos el sensor temp
+
+ void setup() {
+
+  pinMode(D0, OUTPUT); //salida del sensor de hum
+  pinMode(D7, OUTPUT); //salida del sensor de temp
+  pinMode(sensor_pin, INPUT); //entrada del sensor de hum
+
+  Serial.begin(9600);   // Inicializamos comunicación serie
+  dht.begin();   // Comenzamos el sensor DHT11
+
+}
+
+void loop () {
+
+ loopTemp();
+ loopHum();
+
+}
+  void loopTemp () {
+   
+      delay(5000);  // Esperamos 5 segundos entre medidas
+
+  float h = dht.readHumidity(); // Leemos la humedad relativa
+  float t = dht.readTemperature(); // Leemos la temperatura en grados centígrados
+
+  Serial.print("Humedad: "); //imprimimos los valores de humedad y temperatura
+  Serial.print(h);
+  Serial.print(" %\t");
+  Serial.print("Temperatura: ");
+  Serial.print(t);
+  Serial.println(" *C ");
+ 
+  if((t) < 25){  //para prender el relé de luces
+
+  digitalWrite(D7, HIGH);
+  Serial.println ("Clima Frío");
+  }
+ 
+  else {
+  digitalWrite(D7, LOW);
+  Serial.println ("Clima Cálido");
+ 
+}
+   
+   
+    }
+ 
+
+  void loopHum () {
+   
+//Serial.println ("estoy en el loop");
+
+//digitalWrite(rele_pin, HIGH);
+
+//Serial.println (sensor_pin);
+
+ 
+
+if(digitalRead(sensor_pin) == HIGH){
+
+digitalWrite(D0, HIGH);
+
+Serial.println ("Tierra Seca");
+
+//Serial.println ("estoy en el if de seco");
+
+//Serial.println (sensor_pin);
+
+delay(2000);
+
+} else {
+
+//digitalWrite(rele_pin, LOW);
+
+digitalWrite(D0, LOW);
+
+Serial.println ("Tierra humeda");
+
+//Serial.println ("estoy en el if de humedo");
+
+ 
+
+delay(2000);
+
+}
+    }
+
